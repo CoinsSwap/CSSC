@@ -1,0 +1,29 @@
+{
+  "name": "CSSC",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "c": "rollup -c",
+    "w": "rollup -c -w",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CoinsSwap/CSSC.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CoinsSwap/CSSC/issues"
+  },
+  "homepage": "https://github.com/CoinsSwap/CSSC#readme",
+  "dependencies": {
+    "download": "^8.0.0",
+    "inquirer": "^8.0.0"
+  },
+  "devDependencies": {
+    "rollup": "^2.41.4"
+  }
+}

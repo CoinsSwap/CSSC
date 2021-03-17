@@ -1,0 +1,1 @@
+export default () => os.platform()
