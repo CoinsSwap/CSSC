@@ -4,6 +4,7 @@ import download from './tasks/download'
 import cleanup from './tasks/cleanup'
 import run from './tasks/run'
 import account from './tasks/account'
+import prompts from './tasks/prompts'
 
 import { platform } from './constants'
 
@@ -18,7 +19,7 @@ export default async () => {
     }
     if (folder.indexOf('data') === -1) {
       await setup.data()
-      await account.create()
+      await account.create(await prompts.password())
     }
     return run()
   }
@@ -26,6 +27,6 @@ export default async () => {
   await download.geth()
   await setup.data()
   await cleanup.download()
-  await account.create()
+  await account.create(await prompts.password())
   return run()
 }

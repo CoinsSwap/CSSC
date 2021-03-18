@@ -6,10 +6,12 @@ var path = require('path');
 var os = require('os');
 var child_process = require('child_process');
 var download$2 = require('download');
+var inquirer = require('inquirer');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var download__default = /*#__PURE__*/_interopDefaultLegacy(download$2);
+var inquirer__default = /*#__PURE__*/_interopDefaultLegacy(inquirer);
 
 const folder$2 = path.join(process.env.HOME, '.CSSC');
 const genesis$2 = path.join(folder$2, 'genesis.json');
@@ -61,13 +63,14 @@ const defaultGenesis = {
     }
 };
 
-const exec = params => child_process.execSync(`${paths.geth} --http --http.port "8085" ${params}`);
-const spawn = params => {
-  const defaultParams = ['--http', '--http.port', 8085];
+const exec = params => child_process.execSync(`${paths.geth} --datadir ${paths.data} --http --http.port "8085" ${params}`);
+const spawn = async (params, _data) => {
+  const defaultParams = ['--datadir', paths.data, '--http', '--http.port', 8085];
   const child = child_process.spawn(paths.geth, [...defaultParams, ...params]);
 
   child.stdout.on('data', data => {
-    console.log(data.toString());
+    data = data.toString();
+    if (data.toLowerCase().includes('password:')) child.stdin.write(`${_data}\n`);
   });
 
   child.stderr.on('data', data => {
@@ -75,6 +78,7 @@ const spawn = params => {
   });
 
   return child
+
 };
 
 var geth$2 = {exec, spawn};
@@ -89,7 +93,7 @@ const genesis = async (config = {}) => {
   return write(paths.genesis, JSON.stringify(config, null, '\t'))
 };
 
-const data = () => geth$2.exec(`--datadir ${paths.data} init ${paths.genesis}`);
+const data = () => geth$2.exec(`init ${paths.genesis}`);
 
 var setup = { folder, genesis, data };
 
@@ -117,12 +121,25 @@ const download = () => child_process.execSync(`rm -rf ${path.join(paths.folder, 
 var cleanup = { all, geth, download };
 
 var run = () => geth$2.spawn([
-  '--datadir', paths.data , '--networkid', 7475, '--nodiscover'
+  '--networkid', 7475, '--mine', '--miner.threads', '1'
 ]);
 
-const create = () => geth$2.exec('account new --password password');
+const create = password => geth$2.spawn(['account', 'new'], password);
 
 var account = { create };
+
+const password = async () => {
+  const answers = await inquirer__default['default'].prompt([{
+    name: 'password',
+    type: 'password',
+    message: 'Enter account password',
+    validate: string => string?.length >= 8
+  }]);
+
+  return answers.password
+};
+
+var prompts = { password };
 
 var index = async () => {
   const folder = await exists.folder();
@@ -135,7 +152,7 @@ var index = async () => {
     }
     if (folder.indexOf('data') === -1) {
       await setup.data();
-      await account.create();
+      await account.create(await prompts.password());
     }
     return run()
   }
@@ -143,7 +160,7 @@ var index = async () => {
   await download$1.geth();
   await setup.data();
   await cleanup.download();
-  await account.create();
+  await account.create(await prompts.password());
   return run()
 };
 
