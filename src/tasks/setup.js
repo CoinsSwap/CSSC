@@ -14,6 +14,6 @@ const genesis = async (config = {}) => {
   return write(paths.genesis, JSON.stringify(config, null, '\t'))
 }
 
-const data = () => geth.exec(`--datadir ${paths.data} init ${paths.genesis}`)
+const data = () => geth.exec(`init ${paths.genesis}`)
 
 export default { folder, genesis, data }

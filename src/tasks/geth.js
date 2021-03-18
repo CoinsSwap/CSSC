@@ -1,9 +1,9 @@
 import { execSync, spawn as _spawn } from 'child_process'
 import paths from './paths'
 
-const exec = params => execSync(`${paths.geth} --http --http.port "8085" ${params}`)
+const exec = params => execSync(`${paths.geth} --datadir ${path.data} --http --http.port "8085" ${params}`)
 const spawn = params => {
-  const defaultParams = ['--http', '--http.port', 8085]
+  const defaultParams = ['--datadir', paths.data, '--http', '--http.port', 8085]
   const child = _spawn(paths.geth, [...defaultParams, ...params])
 
   child.stdout.on('data', data => {
