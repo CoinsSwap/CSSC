@@ -8,7 +8,8 @@ import prompts from './tasks/prompts'
 
 import { platform } from './constants'
 
-export default async () => {
+export default async networkid => {
+  if (!networkid) networkid = 7475
   const folder = await exists.folder()
   if (!folder) await setup.folder()
   if (folder) {

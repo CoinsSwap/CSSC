@@ -121,7 +121,7 @@ const download = () => child_process.execSync(`rm -rf ${path.join(paths.folder, 
 var cleanup = { all, geth, download };
 
 var run = () => geth$2.spawn([
-  '--networkid', 7475, '--mine', '--miner.threads', '1'
+  '--networkid', 74, '--mine', '--miner.threads', '1'
 ]);
 
 const create = password => geth$2.spawn(['account', 'new'], password);
@@ -141,7 +141,7 @@ const password = async () => {
 
 var prompts = { password };
 
-var index = async () => {
+var index = async networkid => {
   const folder = await exists.folder();
   if (!folder) await setup.folder();
   if (folder) {

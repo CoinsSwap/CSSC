@@ -1,3 +1,3 @@
 const mod = require('./index.js');
-
-mod()
+// testnet
+mod(7475)

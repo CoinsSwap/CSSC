@@ -4,4 +4,10 @@ export default [{
     dir: './',
     format: 'cjs'
   }]
+}, {
+  input: 'testnet/deploy.js',
+  output: [{
+    dir: './testnet/dist',
+    format: 'cjs'
+  }]
 }]
